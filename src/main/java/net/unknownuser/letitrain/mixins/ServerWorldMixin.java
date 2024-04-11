@@ -48,9 +48,6 @@ public class ServerWorldMixin {
 
 			ci.cancel();
 		} else if (Config.preserveWeatherTime()) {
-			worldProperties.setRainTime(untilRain);
-			worldProperties.setThunderTime(untilThunder);
-
 			ci.cancel();
 		}
 	}
