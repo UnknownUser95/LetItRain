@@ -34,6 +34,7 @@ public class ServerWorldMixin {
 				if (Config.resetThunderOnSleep()) {
 					logRoll("Reset thundering because of configuration");
 					worldProperties.setThundering(false);
+					worldProperties.setThunderTime(0);
 				} else if (worldProperties.isThundering()) {
 					int thunderContinuationChance = Config.keepThunderChance();
 					int thunderRoll               = RANDOM.nextInt(MAX_ROLL_CHANCE);
