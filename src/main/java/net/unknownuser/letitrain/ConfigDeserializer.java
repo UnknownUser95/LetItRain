@@ -20,8 +20,14 @@ public class ConfigDeserializer implements JsonDeserializer<Config> {
 		int     keepThunderChance   = getter.getInt("keepThunderChance", Config.Defaults.KEEP_THUNDER_CHANCE);
 		boolean preserveWeatherTime = getter.getBool("preserveWeatherTime", Config.Defaults.PRESERVE_WEATHER_TIME);
 		boolean logRolls            = getter.getBool("logRolls", Config.Defaults.LOG_ROLLS);
+		boolean resetThunderOnSleep = getter.getBool("resetThunderOnSleep", Config.Defaults.RESET_THUNDER_ON_SLEEP);
 		
-		Config config = new Config(keepRainChance, keepThunderChance, preserveWeatherTime, logRolls);
+		Config config = new Config(keepRainChance,
+			keepThunderChance,
+			preserveWeatherTime,
+			logRolls,
+			resetThunderOnSleep
+		);
 		
 		if (getter.hasError()) {
 			config.hasError();

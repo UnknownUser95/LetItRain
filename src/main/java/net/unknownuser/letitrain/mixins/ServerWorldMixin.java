@@ -12,6 +12,9 @@ import static net.unknownuser.letitrain.LetItRain.*;
 @Mixin(ServerWorld.class)
 public class ServerWorldMixin {
 	
+	@Unique
+	private static final int MAX_ROLL_CHANCE = 100;
+	
 	@Final
 	@Shadow
 	private ServerWorldProperties worldProperties;
@@ -19,38 +22,36 @@ public class ServerWorldMixin {
 	// as far as I can tell, resetWeather is only called when sleeping
 	@Inject(at = @At("HEAD"), method = "resetWeather", cancellable = true)
 	private void resetWeather(CallbackInfo ci) {
-		final int untilRain = worldProperties.isRaining() ? 0 : worldProperties.getRainTime();
-		final int untilThunder = worldProperties.isThundering() ? 0 : worldProperties.getThunderTime();
-		
-		if (untilRain == 0) {
+		if (worldProperties.isRaining()) {
 			int rainContinuationChance = Config.keepRainChance();
-			int rainRoll               = RANDOM.nextInt(Config.Defaults.NEVER_KEEP, Config.Defaults.ALWAYS_KEEP);
-			logRoll("Rain continuation dice rolled: {}/{}.", rainRoll, rainContinuationChance);
+			int rainRoll               = RANDOM.nextInt(MAX_ROLL_CHANCE);
+			logRoll("Rain continuation rolled: {}/{}", rainRoll, rainContinuationChance);
+			
 			if (rainRoll < rainContinuationChance) {
 				worldProperties.setRaining(true);
-				logRoll("Rain continuation passed.");
-				if (untilThunder == 0) {
+				logRoll("Rain continuation passed");
+				
+				if (Config.resetThunderOnSleep()) {
+					logRoll("Reset thundering because of configuration");
+					worldProperties.setThundering(false);
+				} else if (worldProperties.isThundering()) {
 					int thunderContinuationChance = Config.keepThunderChance();
-					int thunderRoll               = RANDOM.nextInt(
-						Config.Defaults.NEVER_KEEP,
-						Config.Defaults.ALWAYS_KEEP
-					);
-					logRoll("Thunder continuation dice rolled: {}/{}.", thunderRoll, thunderContinuationChance);
+					int thunderRoll               = RANDOM.nextInt(MAX_ROLL_CHANCE);
+					logRoll("Thunder continuation rolled: {}/{}", thunderRoll, thunderContinuationChance);
+					
 					if (thunderRoll < thunderContinuationChance) {
 						worldProperties.setThundering(true);
-						logRoll("Thunder continuation passed.");
+						logRoll("Thunder continuation passed");
 					} else {
-						LetItRain.LOGGER.info("Thunder continuation not passed.");
+						LetItRain.LOGGER.info("Thunder continuation not passed");
 					}
 				}
+				ci.cancel();
 			} else {
-				LetItRain.LOGGER.info("Rain continuation not passed.");
-				worldProperties.setRaining(false);
-				worldProperties.setThundering(false);
+				LetItRain.LOGGER.info("Rain continuation not passed");
 			}
 			
-			ci.cancel();
-		} else if (Config.preserveWeatherTime()) {
+		}    else if (Config.preserveWeatherTime()) {
 			ci.cancel();
 		}
 	}

@@ -57,7 +57,7 @@ class FieldGetter {
 		
 		if (clamped != value) {
 			this.hasError = true;
-			LetItRain.LOGGER.info("value for {} is not in range 0-100 (is {}, using {})", name, value, clamped);
+			LetItRain.LOGGER.info("value for {} is not in range 0-100 (was '{}', using '{}')", name, value, clamped);
 		}
 		
 		return clamped;

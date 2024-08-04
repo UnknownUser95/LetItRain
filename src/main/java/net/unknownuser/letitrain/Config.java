@@ -11,16 +11,23 @@ public class Config implements Serializable {
 		private Defaults() {
 		}
 		
-		public static final int     KEEP_RAIN_CHANCE      = 100;
-		public static final int     KEEP_THUNDER_CHANCE   = 100;
-		public static final boolean PRESERVE_WEATHER_TIME = true;
-		public static final boolean LOG_ROLLS             = false;
+		public static final int     KEEP_RAIN_CHANCE       = 100;
+		public static final int     KEEP_THUNDER_CHANCE    = 100;
+		public static final boolean PRESERVE_WEATHER_TIME  = true;
+		public static final boolean LOG_ROLLS              = false;
+		public static final boolean RESET_THUNDER_ON_SLEEP = true;
 		
 		public static final int ALWAYS_KEEP = 100;
 		public static final int NEVER_KEEP  = 0;
 		
 		private static Config config() {
-			return new Config(KEEP_RAIN_CHANCE, KEEP_THUNDER_CHANCE, PRESERVE_WEATHER_TIME, LOG_ROLLS);
+			return new Config(
+				KEEP_RAIN_CHANCE,
+				KEEP_THUNDER_CHANCE,
+				PRESERVE_WEATHER_TIME,
+				LOG_ROLLS,
+				RESET_THUNDER_ON_SLEEP
+			);
 		}
 	}
 	
@@ -30,11 +37,12 @@ public class Config implements Serializable {
 		.toFile();
 	private static      Config instance    = null;
 	
-	public Config(int keepRainChance, int keepThunderChance, boolean preserveWeatherTime, boolean logRolls) {
+	public Config(int keepRainChance, int keepThunderChance, boolean preserveWeatherTime, boolean logRolls, final boolean resetThunderOnSleep) {
 		this.keepRainChance      = keepRainChance;
 		this.keepThunderChance   = keepThunderChance;
 		this.preserveWeatherTime = preserveWeatherTime;
 		this.logRolls            = logRolls;
+		this.resetThunderOnSleep = resetThunderOnSleep;
 	}
 	
 	@Expose
@@ -45,6 +53,8 @@ public class Config implements Serializable {
 	protected final   boolean preserveWeatherTime;
 	@Expose
 	protected final   boolean logRolls;
+	@Expose
+	protected final   boolean resetThunderOnSleep;
 	// Gson *will* write all fields, even when enabling ignoreNonExposed
 	// use transient to even skip the inclusion
 	private transient boolean hasError = false;
@@ -67,6 +77,10 @@ public class Config implements Serializable {
 	
 	public static boolean logRolls() {
 		return instance.logRolls;
+	}
+	
+	public static boolean resetThunderOnSleep() {
+		return instance.resetThunderOnSleep;
 	}
 	
 	private static Config getConfigFromFile() {
