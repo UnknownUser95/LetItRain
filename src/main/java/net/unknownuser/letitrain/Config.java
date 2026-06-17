@@ -52,15 +52,15 @@ public class Config implements Serializable {
     }
     
     @Expose
-    protected final   int     keepRainChance;
+    protected final int     keepRainChance;
     @Expose
-    protected final   int     keepThunderChance;
+    protected final int     keepThunderChance;
     @Expose
-    protected final   boolean preserveWeatherTime;
+    protected final boolean preserveWeatherTime;
     @Expose
-    protected final   boolean logRolls;
+    protected final boolean logRolls;
     @Expose
-    protected final   boolean resetThunderOnSleep;
+    protected final boolean resetThunderOnSleep;
     
     public static int keepRainChance() {
         return instance.keepRainChance;
